@@ -1,0 +1,87 @@
+\setcounter{page}{0}
+\chapter{Exposé}
+
+\section{Problemstellung}
+Im Teilprojekt Fission des Sonderforschungsbereichs TRR Transregio 62 werden aktuell Regeln zur Bewertung der Ausgabegeräte \todof{Hi Frank, du kannst mit todof eigene Kommentare einfügen} verwendet\todor{Sollte dieser Teil ausführlicher sein?}.
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=.8\textwidth]{images/FissionUebersicht}
+    \caption{\label{fission}Vereinfachte Übersicht der Funktionsweise der Fission}
+\end{figure}
+Dies läuft im Moment wie folgt ab: Abstrakte Informationen werden vom Dialog-Manager an die Fission gesendet. Diese abstrakten Informationen werden dann von der Fission wie in Abbildung \ref{fission} zu sehen verarbeitet. Die Fission legt mittels eines Information-Mappings fest, wie die abstrakten Informationen als konkrete Informationen dargestellt werden können. So könnte zum Beispiel die abstrakte Information \emph{apple} sowohl als Text als auch als Bild dargestellt werden. Diese konkreten Daten werden dann im Bezug auf die vorhandenen Kontextinformationen (wie  User-, Environment- oder Device-Context bewertet.
+Diese Bewertung erfolgt mit sogenannten Regeln bzw. Bewertungsfunktionen\todor{Ich denke die genaue Definition  wäre dann Teil der Bachelorarbeit?}. Eine solche Regel besteht dabei aus einem Regel-Rumpf\todor{Ist Regel-Rumpf als Begriff okay? Sollte hier vllt eine echte Regel (z.B. Code Snippet) abgebildet werden?}, z.B. \glqq Es ist sehr gut den akustischen Kanal einzusetzen wenn der Nutzer blind ist\grqq. Außerdem besitzt jede Regel einen Funktionswert, der positiv oder negativ sein kann. Alle Regeln werden dann auf alle Kombinationen aus konkreten Informationen und Ausgabemedien(Devices) angewendet. Dabei kann jede Regel mit einer unterschiedlichen Gewichtung in die Bewertung einfließen. Die Gewichtung geht aus dem Kontext hervor.
+\linebreak
+Dieser Ansatz der Bewertung hat vermutlich exponentielle Laufzeitkomplexität. Davon ausgehend, dass bereits ein weitestgehend optimaler Algorithmus genutzt wird um die Bewertung der Regeln zu berechnen soll dieser Ansatz nun evaluiert werden. Dies dient dazu Aussagen über den Einfluss der Variablen auf die Laufzeit treffen zu können. 
+
+
+\section{Geplantes Vorgehen}
+Das Vorgehen kann in drei Teile, die Analyse, Evaluation und Bewertung des aktuellen Ansatz aufgeteilt werden. Ziel ist es klare Aussagen über das Laufzeitverhalten der Fission bei sich ändernden Variablen (siehe hierzu auch Evaluation) zu treffen.
+
+\subsection{Analyse}
+Hierbei geht es um eine theoretische Betrachtung des aktuell gewählten Ansatzes. Es soll z.B. der Algorithmus klassifiziert und seine theoretische Laufzeitkomplexität bestimmt werden. Auf Basis dieser Analyse werden dann bei der Evaluation zu prüfende Werte/Grenzen festgelegt, die der Algorithmus einhalten soll(te). Es sollten außerdem für die Evaluation nötigen Kriterien, Regeln und Kontexte definiert werden die dann wiederum wichtigen Einfluss auf die Planung haben.
+
+\subsection{Evaluation}
+Zur Evaluation soll ein Tool entwickelt werden, welches den Bewertungsalgorithmus der Fission unabhängig testen kann, dabei soll es möglich sein alle Variablen verändern zu können: Abstrakte Daten, Daten-Mappings, Kontext (User, Environment, Device). Außerdem muss das Evaluations-Tool in der Lage sein die Laufzeiten zu erfassen und angemessen zu protokollieren. Zur Implementierung des Evaluations-Tools ist sowohl ein Entwurf als auch anschließender Test nötig\todor{Muss hierauf genauer eingegangen werden? Ist ja das Arbeitspaket mit dem größten Zeitaufwand}. Die genauen Anforderungen an das Evaluations-Tool gehen aus der Analyse hervor. Diese Ergebnisse sind Grundlage für die Planung der Test-Settings. Diese sollen dann durchlaufen und deren Laufzeiten protokolliert werden.
+
+
+\subsection{Auswertung}
+Im Anhschluss an die Evaluation sollen die daraus resultierenden Ergebnisse bewertet werden. Ziel ist es Richt- bzw. Grenzwerte für die maximale Anzahl an Variablen die den Bewertungsalgorithmus der Fission beeinflussen zu empfehlen\todor{Das ist doch das Hauptziel, richtig? :)}.
+Eventuell kann aus den Ergebnissen und der Analyse auch eine Anpassung \todor{Eventuell... schreibt man das ins Exposé rein oder hat man das halt im Hinterkopf?} des Algorithmus empfohlen werden.
+
+
+\section{Geplante Gliederung}
+\begin{itemize}
+    \item  Motivation
+    \item  Beschreibung der Problemstellung
+    \begin{itemize}
+        \item  Regeln/Evaluationsfunktionen
+        \item  Kontext
+        \item  Abstrakte Informationen
+        \item  Informationsmapping
+        \item  Ausgabemedien (Device components)
+    \end{itemize}
+    \item  Analyse
+    \begin{itemize}
+        \item  Beschreibung des aktuellen Ansatz (Algorithmus)
+        \item  Theoretische Bewertung
+        \item  Evtl. Vergleich mit ähnlichen Lösungen
+    \end{itemize}
+    \item  Evaluation
+    \begin{itemize}
+        \item  Planung
+        \item  Entwicklung Evaluationstool
+        \item  Durchführung
+    \end{itemize}
+    \item  Auswertung
+     \begin{itemize}
+     	\item  Zusammenfassung
+     	\item  Diskussion
+        \item  Evtl. Verbesserungsansätze
+    \end{itemize}
+\end{itemize}
+
+
+\section{Zeitabschätzung}
+Bei einer Bachelorarbeit im Umfang von 12 LP können 40 Tage für die eigentliche Durchführung geplant werden. Aus der Gliederung ergibt sich also folgende Zeitabschätzung\todor{Zu grob?}:
+\begin{table}[h]
+    \centering
+    \begin{tabular}{|l|l|l|}
+    	\hline
+        Arbeitspaket & Zeit in Tagen \\
+        \hline
+        Beschreibung der Problemstellung & 2 Tage \\
+        Analyse & 5 Tage \\
+        Evaluation - Planung & 5 Tage \\
+        Evaluation - Entwicklung Evaluationstool & 12 Tage \\
+        Evaluation - Durchführung & 5 Tage \\
+        Auswertung - Zusammenfassung & 2 Tage \\
+        Auswertung - Diskussion & 4 Tage \\
+        Auswertung - Evtl. Verbesserungsansätze & 5 Tage \\
+        \hline
+        Gesamt & 40 Tage \\
+        \hline
+        
+    \end{tabular}
+\end{table}
+
+\todor{Letzter Punkt einplanen oder lieber Pufferzeit?}

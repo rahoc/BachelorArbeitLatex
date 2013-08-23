@@ -1,0 +1,275 @@
+%%
+%% Dokumentenart
+%%
+\NeedsTeXFormat{LaTeX2e}
+\documentclass[
+    a4paper,
+    10pt,
+    bibliography=totoc,
+    twoside,
+    openany,
+    numbers=noenddot,
+    headings=normal,
+    DIV=9,
+    parskip
+    %,draft
+]{scrbook}
+
+
+%%
+%% Unterstützung für deutsche Sprache, Umlaute etc.
+%%
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[ngerman]{babel}
+\usepackage[babel,german=quotes]{csquotes}
+
+
+%%
+%% Diverse Pakete
+%%
+\usepackage{scrhack}
+\usepackage{graphicx}
+\usepackage{verbatim}
+\usepackage{tabularx}
+\usepackage{subfigure}
+\usepackage{url}
+\usepackage{color}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{setspace}
+\usepackage{listings}
+\usepackage{colortbl}
+%\usepackage{showframe} % Seitenspiegel anzeigen
+\usepackage{microtype}
+\usepackage{hyperref} % muss letztes Paket in der Liste sein
+\usepackage[shadow]{todonotes}
+%\usepackage[disable]{todonotes} % keine Kommentare anzeigen
+
+%%
+%% hier Namen etc. einsetzen
+%%
+\newcommand{\fullname}{Rainer Hochdorfer}
+\newcommand{\email}{rainer.hochdorfer@uni-ulm.de}
+\newcommand{\titel}{Evaluation des Bewertungsalgorithmus der Fission}
+\newcommand{\jahr}{2013}
+\newcommand{\matnr}{748637}
+\newcommand{\gutachterA}{Prof.\ Dr.\ Michael Weber}
+\newcommand{\gutachterB}{Frank Honold}
+\newcommand{\betreuer}{Frank Honold}
+\newcommand{\fakultaet}{Ingenieurwissenschaften\\und Informatik}
+%\newcommand{\fakultaet}{Mathematik und\\Wirtschaftswissenschaften}
+%\newcommand{\fakultaet}{Naturwissenschaften}
+%\newcommand{\fakultaet}{Medizin}
+\newcommand{\institut}{Institut für Medieninformatik}
+\newcommand{\arbeit}{Exposé für eine Bachelorarbeit}
+\newcommand{\todor}[1]{\todo[color=green!40]{#1}}
+\newcommand{\todof}[1]{\todo[color=yellow!40]{#1}}
+
+%%
+%% Setzt Autor und Titel in den Metadaten des erzeugten Dokumentes
+%%
+\pdfinfo{
+    /Author (\fullname)
+    /Title (\titel)
+    /Producer (pdfeTex 3.14159-1.30.6-2.2)
+    /Keywords ()
+}
+\hypersetup{
+    pdftitle=\titel,
+    pdfauthor=\fullname,
+    pdfsubject={\arbeit},
+    pdfproducer={pdfeTex 3.14159-1.30.6-2.2},
+    colorlinks=false,
+    pdfborder=0 0 0
+}
+
+
+%%
+%% Tiefe, bis zu der Überschriften in das Inhaltsverzeichnis kommen
+%%
+\setcounter{tocdepth}{3}
+
+
+%%
+%% Verhindert überhängende Absatzteile
+%%
+\clubpenalty10000
+\widowpenalty10000
+\displaywidowpenalty=10000
+
+
+%%
+%% Einstellungen für Codelistings
+%%
+\lstset{
+    language=Java,
+    showstringspaces=false,
+    frame=single,
+    numbers=left,
+    basicstyle=\ttfamily,
+    numberstyle=\tiny
+}
+
+
+%%
+%% Formatierung des Literaturverzeichnisses
+%%
+\bibliographystyle{plaindin} % Nummern und alphabetisch sortiert
+%\bibliographystyle{alphadin} % Buchstaben und sortiert
+%\bibliographystyle{abbrvdin} % Nummern und abgekürzte Namen
+%\bibliographystyle{unsrtdin} % Nummern und unsortiert
+
+
+%%
+%% Eigene Makros
+%%
+\newcommand{\FIXME}[1]{\colorbox{yellow}{\bf FIXME: #1}}
+
+
+%%
+%% Eigene Farben
+%%
+\definecolor{Gray}{rgb}{0.80784, 0.86667, 0.90196} %dunkelblau
+\definecolor{Lightgray}{rgb}{0.9176, 0.95, 0.95686} %hellblau
+\definecolor{Akzent}{rgb}{0.6627, 0.63529, 0.55294} %akzentfarbe
+
+
+%%
+%% Liniendicke in Tabellen etc.
+%%
+\setlength{\arrayrulewidth}{0.1pt}
+
+
+%%
+%% Schriftarten
+%%
+\renewcommand{\sfdefault}{phv}
+\renewcommand{\rmdefault}{phv}
+\renewcommand{\ttdefault}{pcr}
+\KOMAoptions{DIV=last}
+
+
+%%
+%% Seitenlayout
+%%
+\pagestyle{headings}
+
+
+%%
+%% Trennungsregeln
+%%
+\hyphenation{Sil-ben-trenn-ung}
+
+
+%%
+%% Schönere Bullets bei Aufzählungen
+%%
+\renewcommand{\labelitemi}{$\bullet$}
+\renewcommand{\labelitemii}{$\circ$}
+\renewcommand{\labelitemiii}{$\cdot$}
+
+
+%%
+%% Beginn des eigentlichen Dokumentes
+%%
+\begin{document}
+
+
+%%
+%% Vorspann
+%%
+%%\frontmatter
+
+
+%%
+%% Titelseite
+%%
+\thispagestyle{empty}
+\begin{addmargin*}[4mm]{-32mm}
+    % Logo und Wortmarke
+    \includegraphics[height=1.8cm]{images/unilogo_bild}
+    \hfill
+    \includegraphics[height=1.8cm]{images/unilogo_wort}
+    \vspace*{2.1em}
+
+    % Briefkopf
+    \footnotesize
+    \textbf{Universität Ulm} \textbar ~89069 Ulm \textbar ~Germany
+    \hfill
+    \parbox[t]{42mm}{\bfseries Fakultät für\\\fakultaet\\\mdseries\institut}
+    \vspace*{2cm}
+
+    % Titel
+    \parbox{140mm}{\bfseries \raggedright \huge \titel}
+
+    % Untertitel
+    {\arbeit{} an der Universität Ulm}
+    \vspace*{4em}
+
+    % Prüfer etc.
+    \textbf{Vorgelegt von:}\\\fullname\\\email\\[2em]
+    \textbf{Gutachter:}\\\gutachterA\\\gutachterB\\[2em]
+    \textbf{Betreuer:}\\\betreuer\\[1.5em]
+    \jahr
+\end{addmargin*}
+
+
+%%
+%% Impressum
+%%
+
+
+
+%%
+%% Inhaltsverzeichnis
+%%
+%%\setstretch{1.4}
+%%\tableofcontents
+
+
+%%
+%% Hauptteil
+%%
+%%\mainmatter
+\input{chapters/expose}
+
+% hier weitere Kapitel einbinden
+
+
+%%
+%% Anhänge
+%%
+%%\appendix
+%%\input{chapters/sources}
+
+
+%%
+%% Nachspann
+%%
+%%\backmatter
+
+
+%%
+%% Literaturverzeichnis
+%%
+%%\bibliography{bibliography}
+
+
+%%
+%% Versicherung
+%%
+%%\cleardoublepage
+%%\thispagestyle{empty}
+
+%%Name: \fullname \hfill Matrikelnummer: \matnr \vspace{2cm}
+
+%%\minisec{Erklärung}
+
+%%Ich erkläre, dass ich die Arbeit selbständig verfasst und keine anderen als die angegebenen Quellen und Hilfsmittel verwendet habe.\vspace{2cm}
+
+%%Ulm, den \dotfill
+
+%%\hfill {\footnotesize \fullname}
+\end{document}
