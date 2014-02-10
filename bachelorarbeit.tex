@@ -46,6 +46,35 @@
 \usepackage{hyperref} % muss letztes Paket in der Liste sein
 \usepackage[shadow]{todonotes}
 %\usepackage[disable]{todonotes} % keine Kommentare anzeigen
+\usepackage{listings}
+\usepackage{xcolor}
+
+\lstdefinestyle{sharpc}{language=[Sharp]C, frame=tblr, rulecolor=\color{black!80!black}}
+
+
+\definecolor{cyan}{HTML}{2B91AF}
+\definecolor{comment}{HTML}{008000}
+\definecolor{keyword}{HTML}{0000FF}
+\definecolor{string}{HTML}{DDDDDD}
+\lstset{style=sharpc}
+\lstset{basicstyle=\ttfamily\scriptsize,
+		keywordstyle=\color{keyword}\ttfamily,
+        stringstyle=\color{string}\ttfamily,
+		commentstyle=\color{comment}\ttfamily,
+		breaklines=true}
+\lstset{literate=%
+{Ö}{{\"O}}1 
+{Ä}{{\"A}}1 
+{Ü}{{\"U}}1 
+{ß}{{\ss}}2 
+{ü}{{\"u}}1 
+{ä}{{\"a}}1 
+{ö}{{\"o}}1
+}
+\lstset{emph={%  
+    Random, Dictionary, List, Double, Randomizer%
+    },emphstyle={\color{cyan}}%
+}%
 
 %%
 %% hier Namen etc. einsetzen
@@ -63,7 +92,7 @@
 %\newcommand{\fakultaet}{Naturwissenschaften}
 %\newcommand{\fakultaet}{Medizin}
 \newcommand{\institut}{Institut für Medieninformatik}
-\newcommand{\arbeit}{Exposé für eine Bachelorarbeit}
+\newcommand{\arbeit}{Bachelorarbeit}
 \newcommand{\todor}[1]{\todo[color=green!40]{#1}}
 \newcommand{\todof}[1]{\todo[color=yellow!40]{#1}}
 
@@ -233,8 +262,12 @@
 %% Hauptteil
 %%
 %%\mainmatter
-\input{chapters/expose}
-
+\input{chapters/motivation}
+\input{chapters/problemstellung}
+\input{chapters/theoretischeanalyse}
+\input{chapters/evaluationsansaetze}
+\input{chapters/evaluation}
+\input{chapters/diskussion}
 % hier weitere Kapitel einbinden
 
 

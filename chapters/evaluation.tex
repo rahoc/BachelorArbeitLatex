@@ -1,0 +1,138 @@
+\chapter{Evaluation}
+
+Das Ziel der Evaluation ist die Performance des Fissions-Algorithmus zu messen, welcher die Bewertungsfunktionen für verschiedene Dialog-Outputs berechnet. Wie in der Theoretischen Betrachtung festgestellt sind dabei folgende unabhängigen Variablensets zu beachten: \emph{Personmodel}, \emph{Surroundingsmodel}, \emph{DistanceRelations}, die \emph{Device}- und \emph{Componentmodel} Permutationen, \emph{Rules} und der jeweilige \emph{DialogOutput}. Zudem gilt es die Hardwarekonfiguration des Testsystems zu beachten.
+Abhängige Variable ist die Zeit, die der Algorithmus zur Berechnung benötigt.
+
+\section{Entwicklung des Tools zur Evaluation}
+Um das Evaluationsvorhaben durchzuführen wird ein zusätzliches Tool entwickelt. Es hat insbesondere drei Aufgaben: Erzeugen von generischen Testdaten (unabhängige Variablen), Versand der Daten als Semaine-Nachrichten an die Fission und das Logging der Testergebnisse (abhängige Variablen).
+
+\subsection{Generische Testdaten}
+Bei der generischen Erzeugung der Testdaten gelten spezielle Anforderungen. Mit der Klasse \emph{Random}, die durch das .Net Framework zur Verfügung gestellt können Zufallszahlen erzeugt werden. Jedoch bietet diese Klasse keine Funktionen an um Wahrscheinlichkeitsverteilungen zu erzeugen. Für die Erzeugung dieser Zufallswerte \todor{auf Zufallswerte eingehen} wurde die statische Klasse \emph{Randomizer} erstellt. Diese bietet verschiedene Methoden an um die generischen Testdaten zu erzeugen.
+\subsubsection{Zufällige, gleichverteilte Wahrscheinlichkeitswerte}
+Eine dieser Anforderungen war es, für beliebig viele Entitäten eine Wahrscheinlichkeitsverteilung zu erzeugen, die in Summe eine vorgegebene Gesamtwahrscheinlichkeit ergibt. Die Einzelwerte sollen hierbei jedoch zufällig gleichverteilt und \emph{nicht} normalverteilt sein. Eine mathematische Lösung für dieses Problem bietet folgender Ansatz\footnote{http://www.matheboard.de/archive/501805/thread.html, 14.11.2013}:
+\begin{enumerate}
+\item Erzeuge \( n \)  verschiedene Zufallszahlen \(z_{i}, i = 1...n \) mit \(z_{i} \in \mathbb{R}^+ \) 
+\item Summiere über alle Zufallszahlen: \( z:= \sum_{i=1}^{n} z_{i}\)
+\item Teile die gewünschte Summe der Zufallszahlen \( s \)  durch die Summe der \\Zufallszahlen \( z \): \( \frac{s}{z} = m\)
+\item Multipliziere alle Zufallszahlen \( z_{1} ... z_{n} \) mit dem Faktor \( m \) und erhalte die gewünschten Zufallszahlen \( y_{1} ... y_{n} \) mit \( s = \sum_{i=1}^{n} y_{i}\) mit \(y_{i} = m * z_{i} \)
+\end{enumerate}
+Diese Schritte sind im Algorithmus (Listing \ref{RandomDistribution}) umgesetzt. Der Methode müssen ein \emph{Random}-Objekt, die gewünschte Summe der Zufallszahlen (bei Wahrscheinlichkeitsverteilung z.\,B.\ 1 (=100\%)) und die Anzahl der Werte übergeben werden. Das \emph{Random}-Objekt wird an die Methode übergeben, da bei mehrfachem Aufruf der Methode dasselbe Objekt verwendet werden sollte, um eine breite Streuung der Zufallszahlen zu erhalten.
+
+\lstset{caption={Gleichverteilte Wahrscheinlichkeitsverteilung für beliebig viele Werte},label=RandomDistribution}
+\begin{lstlisting}
+public static List<Double> RandomDistribution(Random rnd, Double sum, Int32 count)
+{
+    // Liste für die erstellten Werte (Rückgabewert)
+    List<Double> randomValues = new List<Double>();
+    // Summe der Zufallszahlen
+    Double sumZ = 0;
+
+    for (Int32 i = 0; i < count; i++)
+    {
+        Double randomValue = rnd.NextDouble();
+        // Erzeuge die gewünschte Anzahl Zufallswärte
+        randomValues.Add(randomValue);
+        // Berechne Summe z der erzeugten Zufallswerte
+        sumZ += randomValue;
+    }
+
+    // Sei sum = x. Teile x/z = m.
+    if (sumZ <= 0)
+    {
+        // Nicht durch 0 teilen, Wert sollte positiv sein!
+        return null;
+    }
+    Double multiply = sum / sumZ;
+
+    // Multipliziere alle Zufallszahlen mit m.
+    for (Int32 i = 0; i < count; i++)
+    {
+        randomValues[i] = randomValues[i] * multiply;
+    }
+
+    return randomValues;
+}
+\end{lstlisting}
+
+
+\subsubsection{Zufällige Intgerwerte mit gleichverteilten Wahrscheinlichkeitswerten}
+Eine weitere Anforderung ist die zufällige Generierung von beliebig, jedoch nur einmal auftretenden Integer-Werten innerhalb eines bestimmten Intervalls. Diese wiederum müssen mit einer Wahrscheinlichkeitsverteilung versehen sein. So soll z.\,B.\ auf einer Skala von eins bis zehn, n zufällige Werte gewählt und mit einer Wahrscheinlichkeit belegt werden. Die Summe der n Wahrscheinlichkeitswerte soll eins ergeben (etwa: 3=0,2; 4=0,1; 6=0,4; 9=0,3). Der in Listing \ref{IntAndProbabilityDistribuion} dargestellte Algorithmus erzeugt eine zufällige Anzahl beliebiger jedoch distinkter Integer-Werte in einem vorgegebenen Zahlenbereich [min, max]. Diesen Zahlen wiederum wird dann mit der im vorangegangenen Abschnitt beschriebenen Methode eine Wahrscheinlichkeitsverteilung zugeordnet. Diese Zuordnung wird in einem \emph{Dictionary<int,double>} gespeichert und zurückgegeben.
+\lstset{caption={Gleichverteilte Wahrscheinlichkeitsverteilung für beliebige Integerwerte},label=IntAndProbabilityDistribuion}
+\begin{lstlisting}
+public static Dictionary<int, double> IntAndProbabilityDistribuion( Random rnd,  int min, int max, double sum) {
+
+	// Rückgabewert
+    Dictionary<int, double> distribution = new Dictionary<int, double>();
+
+    List<int> values = new List<int>();
+    // Erzeuge eine bestimmt Anzahl an Werten
+    int countValues = Randomizer.GenerateRandomNumber(min, max);
+    for (int i = 0; i<countValues; i++)
+    {
+        int newValue;
+        do {
+            newValue = Randomizer.GenerateRandomNumber(min, max);
+        }
+        while (values.Contains(newValue));
+        // Füge einzigartige Zahl hinzu
+        values.Add(newValue);
+    }
+    // Erzeuge Wahrscheinlichkeiten
+    List<double> valueProbabilities = Randomizer.RandomDistribution(rnd, sum, countValues);
+    // Füge Werte in Model ein
+    for (int i = 0; i < countValues; i++)
+    {
+        distribution.Add(values[i], valueProbabilities[i]);
+    }
+
+    return distribution;
+}
+\end{lstlisting}
+
+
+
+
+\subsection{Versand der Nachrichten}
+XML Nachrichten werden mit Hilfe der Klassen erzeugt, welche generische Testdaten erzeugen. Diese werden dann mit \emph{Semaine Sender Components} an die Middleware und somit an die Fission verschickt.
+An dieser Stelle ist dies Beispielhaft für das PersonModel beschrieben:
+
+\lstset{caption={Semaine Copmponent PersonModelSender},label=PersonModelSender}
+\begin{lstlisting}
+class PersonModelSender: Component
+{
+    // Die Sender und Receiver
+    private XMLSender _personModelSender;
+    private Receiver _requestReceiver;
+
+    // Konstruktor
+    public PersonModelSender()
+        : base("B3.Budgie.PersonModelSender")
+    {
+        //Person Model request Receiver
+        _requestReceiver = new Receiver("semaine.data.user.request");
+        _receivers.AddLast(_requestReceiver);
+        // Person Model Sender
+        _personModelSender = new XMLSender("semaine.data.user", "XML", this.GetType().Name);
+        _senders.AddLast(_personModelSender);
+    }
+
+    // Reagiere auf Requests
+    protected override void React(SEMAINEMessage message)
+    {
+        if (message.Text.Equals("UPDATE", StringComparison.OrdinalIgnoreCase)) {
+            GenericPersonModel person = new GenericPersonModel("person_id");
+            XmlDocument doc = person.Person.XmlRepresentation;
+            _personModelSender.SendXML(doc, _meta.CurrentTime);
+        }
+    } 
+}
+\end{lstlisting}
+
+
+
+
+
+
+\section{Durchführung}
+
+
